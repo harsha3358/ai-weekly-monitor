@@ -13,24 +13,25 @@ const ROOT_DIR = path.join(__dirname, '..');
 const git = simpleGit(ROOT_DIR);
 
 /**
- * Get the GitHub Pages URL for this repo
+ * Get the Website URL for this repo (Vercel)
  */
 function getPagesUrl() {
-  const username = process.env.GITHUB_USERNAME || 'harsha3358';
+  if (process.env.WEBSITE_URL) {
+    return process.env.WEBSITE_URL.endsWith('/') ? process.env.WEBSITE_URL : `${process.env.WEBSITE_URL}/`;
+  }
   const repo = process.env.GITHUB_REPO_NAME || 'ai-weekly-monitor';
-  if (!username) return `https://your-username.github.io/${repo}/`;
-  return `https://${username}.github.io/${repo}/`;
+  return `https://${repo}.vercel.app/`;
 }
 
 /**
  * Commit and push the latest docs/index.html to GitHub
- * GitHub Actions will then deploy it to GitHub Pages
+ * Vercel will automatically trigger a deployment when this push happens.
  */
-async function deployToGitHubPages() {
+async function deployWebsite() {
   const pagesUrl = getPagesUrl();
   const dateStr = new Date().toISOString().split('T')[0];
 
-  console.log('\n🚀 Deploying to GitHub Pages...');
+  console.log('\n🚀 Triggering Website Deployment (Vercel)...');
   console.log(`   URL: ${pagesUrl}`);
 
   try {
@@ -62,14 +63,14 @@ Report covers AI tool releases from the past 7 days.
     // Push to main
     await git.push('origin', 'main');
 
-    console.log(`   ✅ Pushed to GitHub — Pages will update in ~30s`);
-    console.log(`   🌐 Report URL: ${pagesUrl}`);
+    console.log(`   ✅ Pushed to GitHub — Vercel will deploy automatically in ~30s`);
+    console.log(`   🌐 Live URL: ${pagesUrl}`);
 
     return { success: true, url: pagesUrl };
   } catch (err) {
-    console.error(`   ❌ GitHub push failed: ${err.message}`);
+    console.error(`   ❌ Deployment trigger failed: ${err.message}`);
     return { success: false, error: err.message, url: pagesUrl };
   }
 }
 
-module.exports = { deployToGitHubPages, getPagesUrl };
+module.exports = { deployWebsite, getPagesUrl };

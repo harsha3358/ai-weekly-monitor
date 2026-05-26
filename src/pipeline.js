@@ -16,7 +16,7 @@ const { categorizeArticles } = require('./categorizer');
 const { generateReport } = require('./reporter');
 const { generateWeeklyImage } = require('./image-generator');
 const { generateLinkedInPost } = require('./post-generator');
-const { deployToGitHubPages, getPagesUrl } = require('./github-pages');
+const { deployWebsite, getPagesUrl } = require('./github-pages');
 const { postToLinkedIn } = require('./linkedin');
 const fs = require('fs');
 const path = require('path');
@@ -35,7 +35,7 @@ function log(msg) {
  * Run the full pipeline
  * @param {Object} options
  * @param {boolean} options.skipLinkedIn - Skip LinkedIn posting (for test runs)
- * @param {boolean} options.skipGitHub - Skip GitHub push
+ * @param {boolean} options.skipGitHub - Skip Website push
  * @returns {Promise<Object>} Pipeline results
  */
 async function runPipeline(options = {}) {
@@ -87,21 +87,21 @@ async function runPipeline(options = {}) {
       log('⚠️  Image generation failed — will post without image');
     }
 
-    // ── Step 5: Deploy to GitHub Pages ────────────────────────────────────────
+    // ── Step 5: Trigger Website Deploy ────────────────────────────────────────
     let pagesUrl = getPagesUrl();
     if (!options.skipGitHub) {
-      log('🚀 Step 5/6: Deploying to GitHub Pages...');
-      const ghResult = await deployToGitHubPages();
+      log('🚀 Step 5/6: Triggering Website Deploy (Vercel)...');
+      const ghResult = await deployWebsite();
       if (ghResult.success) {
         pagesUrl = ghResult.url;
         results.pagesUrl = pagesUrl;
-        log(`✅ GitHub Pages updated: ${pagesUrl}`);
+        log(`✅ Website update pushed: ${pagesUrl}`);
       } else {
-        log(`⚠️  GitHub deploy failed: ${ghResult.error}`);
-        results.errors.push(`GitHub: ${ghResult.error}`);
+        log(`⚠️  Website deploy failed: ${ghResult.error}`);
+        results.errors.push(`Website: ${ghResult.error}`);
       }
     } else {
-      log('⏭️  Step 5/6: GitHub deploy skipped (test mode)');
+      log('⏭️  Step 5/6: Website deploy skipped (test mode)');
     }
 
     // ── Step 6: Generate post + post to LinkedIn ──────────────────────────────
@@ -137,7 +137,7 @@ async function runPipeline(options = {}) {
     log(`   Articles: ${results.articlesFound}`);
     log(`   Report: ${results.reportPath}`);
     log(`   Image: ${results.imagePath || 'none'}`);
-    log(`   GitHub Pages: ${results.pagesUrl || 'skipped'}`);
+    log(`   Website: ${results.pagesUrl || 'skipped'}`);
     log(`   LinkedIn: ${results.linkedInPosted ? 'posted' : 'skipped'}`);
     if (results.errors.length > 0) {
       log(`   Errors: ${results.errors.join('; ')}`);

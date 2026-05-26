@@ -1,144 +1,43 @@
 # 🤖 AI Weekly Monitor
 
-> **100% Free** weekly AI tool release tracker → auto-posts to LinkedIn with AI-generated image every Monday.
+An automated, 100% free tool that tracks the latest Artificial Intelligence releases, categorizes them, builds a beautiful web archive, and posts a Gen Z-friendly summary to LinkedIn every week.
 
-## 💰 Cost: $0
-
-| Service | What it does | Cost |
-|---|---|---|
-| Google Gemini 2.0 Flash | Categorization + "Why it matters" summaries | Free (1500 req/day) |
-| **Nano Banana** (Gemini Image via Puter.js) | Cover image generation — no API key needed | **Free** (User-Pays model) |
-| GitHub Pages | Hosts the public report URL | Free |
-| Puppeteer | LinkedIn automation | Free (open source) |
-| RSS feeds | News source (25+ feeds) | Free |
+🔗 **Live Website Archive:** [https://ai-weekly-monitor.vercel.app](https://ai-weekly-monitor.vercel.app)
 
 ---
 
-## 🚀 Setup (5 minutes)
+## 🌟 What This Project Does
 
-### 1. Clone & install
-```bash
-git clone https://github.com/YOUR_USERNAME/ai-weekly-monitor
-cd ai-weekly-monitor
-npm install
-```
+Keeping up with the firehose of new AI tools is nearly impossible. The **AI Weekly Monitor** automates the entire process end-to-end:
 
-### 2. Configure `.env`
-```bash
-cp .env.example .env
-```
-Edit `.env` and fill in:
-- `GEMINI_API_KEY` — Get free at [aistudio.google.com](https://aistudio.google.com)
-- `LINKEDIN_EMAIL` + `LINKEDIN_PASSWORD` — Your LinkedIn login
-- `GITHUB_USERNAME` — Your GitHub username
-
-### 3. Enable GitHub Pages
-1. Go to your repo → **Settings → Pages**
-2. Set source: **GitHub Actions**
-3. Done — your report URL will be: `https://harsha3358.github.io/ai-weekly-monitor/`
-
-### 4. Start the service
-```bash
-node index.js
-```
-
-Open **http://localhost:3000** and click **⚡ Run Now** to test immediately.
+1. **Scrapes the Web:** It pulls from over 25+ top AI RSS feeds and newsletters every week.
+2. **AI Categorization:** It uses **Gemini 2.0 Flash** to filter out the noise and categorize the real tools into clean buckets (Coding & Agents, Video & Media, Research, Enterprise).
+3. **Builds an Archive Website:** It automatically generates a dark-mode, responsive HTML report of the week's tools and adds it to the **Past Reports Archive** on the live website.
+4. **Generates Thumbnails:** It creates a custom, relevant AI-generated cover image using Nano Banana (Puter.js) for the LinkedIn post.
+5. **Posts to LinkedIn:** It uses Gemini to write a snappy, Gen Z-friendly summary of the week's top tools and uses headless Chromium (Puppeteer) to publish it directly to your LinkedIn feed.
 
 ---
 
-## 📅 How it works
+## ⚡ Advantages of This Project
 
-Every **Monday at 9:00 AM IST**, the service automatically:
-
-1. **📡 Fetches** 25+ RSS feeds from OpenAI, Anthropic, DeepMind, Hugging Face, GitHub, arXiv, and more
-2. **🧠 Categorizes** articles into 4 domains using Gemini AI:
-   - 🎬 **Video/Media** — Sora, Runway, ElevenLabs, etc.
-   - 🤖 **Coding/Agents** — GitHub Copilot, Cursor, LangChain, etc.
-   - 📊 **Research/Analytics** — arXiv papers, benchmarks, MLOps
-   - 🔐 **Enterprise/Security** — AWS, Azure, AI governance
-3. **🎨 Generates** a cover image via Pollinations.ai (free AI image generation)
-4. **📝 Writes** a Gen Z-style LinkedIn post (short, punchy, multi-line)
-5. **🌐 Publishes** the full HTML report to GitHub Pages
-6. **📤 Posts** to LinkedIn with the image + text
+- **Zero Cost Architecture:** Uses Google Gemini's free tier, Nano Banana's free image generation, and free GitHub Actions runner. No expensive API keys required.
+- **Set It and Forget It:** Runs entirely in the cloud on a Monday schedule. You never have to open your computer.
+- **Stealth Automation:** Uses `puppeteer-extra-plugin-stealth` to bypass basic bot detections when posting to LinkedIn from a cloud server.
+- **Beautiful UI:** The generated website uses modern design principles (glassmorphism, CSS gradients) to present the data clearly.
+- **Living Archive:** Doesn't just overwrite data—every week's run is saved in a permanent archive so you can look back at AI history.
 
 ---
 
-## 🖥️ Dashboard
+## 🚀 Setup Instructions
 
-| URL | What |
-|---|---|
-| `http://localhost:3000` | Latest report |
-| `http://localhost:3000/history` | All past reports |
-| `http://localhost:3000/status` | JSON status & next run time |
-| `http://localhost:3000/post/:date` | LinkedIn post text for any date |
-
----
-
-## 📬 LinkedIn Post Style
-
-```
-AI dropped different this week. No cap.
-
-🤖 CODING/AGENTS
-→ GitHub Copilot got memory
-→ Claude Code now runs in terminal
-
-🎬 VIDEO/MEDIA
-→ Sora 2 is actually insane
-→ ElevenLabs clones voice in 3s
-
-📊 RESEARCH
-→ New benchmark breaks all LLMs
-
-Full breakdown 👇
-https://your-username.github.io/ai-weekly-monitor/
-
-#AI #ArtificialIntelligence #MachineLearning #AITools #TechNews
-```
+1. Clone this repository.
+2. Link the repository to **Vercel** to host the website automatically (the `vercel.json` will automatically route traffic to the `docs/` folder).
+3. Add the following **Repository Secrets** in your GitHub Settings (`Settings > Secrets and variables > Actions`):
+   - `GEMINI_API_KEY`: Your free Gemini API Key from Google AI Studio.
+   - `LINKEDIN_EMAIL`: Your LinkedIn login email.
+   - `LINKEDIN_PASSWORD`: Your LinkedIn login password.
+   - `WEBSITE_URL`: Your Vercel URL (optional, defaults to `https://[repo-name].vercel.app`).
+4. Go to the **Actions** tab in GitHub and click **Run workflow** to trigger your first scan!
 
 ---
-
-## 📁 Project Structure
-
-```
-ai-weekly-monitor/
-├── src/
-│   ├── sources.js        # 25+ curated RSS feeds
-│   ├── fetcher.js        # Feed fetcher with retry
-│   ├── categorizer.js    # Gemini domain classifier
-│   ├── reporter.js       # HTML report generator
-│   ├── image-generator.js # Pollinations.ai cover image
-│   ├── post-generator.js  # LinkedIn post writer (Gen Z style)
-│   ├── linkedin.js       # Puppeteer LinkedIn automation
-│   ├── github-pages.js   # Git push + Pages deploy
-│   ├── dashboard.js      # Express web dashboard
-│   ├── pipeline.js       # Full pipeline orchestrator
-│   └── scheduler.js      # Monday 9AM cron job
-├── docs/                 # GitHub Pages output
-├── reports/              # Saved HTML reports + images + post text
-├── logs/                 # Run logs
-├── .github/workflows/    # GitHub Actions Pages deploy
-├── .env.example
-└── index.js              # Entry point
-```
-
----
-
-## 🔧 Customization
-
-**Add a source:** Edit `src/sources.js` and add an entry to `SOURCES`.
-
-**Change schedule:** Update `MONITOR_HOUR` and `MONITOR_MINUTE` in `.env`.
-
-**Change domains:** Edit the `DOMAIN_CONFIG` in `src/sources.js`.
-
----
-
-## 🛡️ Privacy
-
-- Your `.env` file (with credentials) is in `.gitignore` and will **never** be committed
-- LinkedIn session cookies are stored locally in `puppeteer-data/` (also gitignored)
-
----
-
-Made with ❤️ using Node.js, Gemini, Pollinations.ai, and Puppeteer.
+*Built autonomously by an AI Coding Agent.*
