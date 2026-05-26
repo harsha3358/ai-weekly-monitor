@@ -618,6 +618,40 @@ function generateHTML(grouped, metadata = {}) {
 
     <main>
       ${sectionsHtml || `<div class="empty-state"><div class="empty-icon">📭</div><p>No articles found this week. Try running a manual scan.</p></div>`}
+      
+      <section class="domain-section" style="margin-top: 60px;">
+        <div class="domain-header">
+          <div class="domain-title-row">
+            <span class="domain-emoji">📚</span>
+            <h2 class="domain-title" style="background: linear-gradient(135deg, #94a3b8, #475569); -webkit-background-clip: text; background-clip: text;">Past Reports Archive</h2>
+          </div>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+          ${(function() {
+            try {
+              const fs = require('fs');
+              const path = require('path');
+              const reportsDir = path.join(__dirname, '..', 'reports');
+              if (fs.existsSync(reportsDir)) {
+                return fs.readdirSync(reportsDir)
+                  .filter(f => f.endsWith('.html'))
+                  .sort().reverse()
+                  .map(f => {
+                    const dateStr = f.replace('.html', '');
+                    return \`<li style="margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+                      <a href="reports/\${f}" class="nav-link" style="--domain-color: #94a3b8; font-size: 1rem;">
+                        📅 Report for \${dateStr}
+                      </a>
+                    </li>\`;
+                  }).join('');
+              }
+            } catch (e) {
+              return '<li>No past reports found.</li>';
+            }
+            return '';
+          })()}
+        </ul>
+      </section>
     </main>
 
     <footer class="site-footer">

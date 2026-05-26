@@ -1,0 +1,37 @@
+name: Weekly AI Monitor
+
+on:
+  schedule:
+    # Runs at 03:30 UTC every Monday (09:00 IST)
+    - cron: '30 3 * * 1'
+  workflow_dispatch: # Allow manual trigger from UI
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Install Chromium dependencies for Puppeteer
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgbm-dev libnss3 libasound2
+        
+    - name: Run Pipeline
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        LINKEDIN_EMAIL: ${{ secrets.LINKEDIN_EMAIL }}
+        LINKEDIN_PASSWORD: ${{ secrets.LINKEDIN_PASSWORD }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: node index.js --run-once

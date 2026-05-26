@@ -13,7 +13,9 @@
  */
 
 require('dotenv').config();
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 const fs = require('fs');
 const path = require('path');
 
@@ -100,7 +102,9 @@ async function doLogin(page) {
   await sleep(300);
   await page.type(SELECTORS.passwordInput, password, { delay: 50 });
   await sleep(300);
-  await page.click(SELECTORS.loginBtn);
+  
+  // Press Enter instead of clicking a brittle button selector
+  await page.keyboard.press('Enter');
 
   await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
 
