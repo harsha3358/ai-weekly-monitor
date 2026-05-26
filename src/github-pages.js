@@ -16,7 +16,7 @@ const git = simpleGit(ROOT_DIR);
  * Get the GitHub Pages URL for this repo
  */
 function getPagesUrl() {
-  const username = process.env.GITHUB_USERNAME || '';
+  const username = process.env.GITHUB_USERNAME || 'harsha3358';
   const repo = process.env.GITHUB_REPO_NAME || 'ai-weekly-monitor';
   if (!username) return `https://your-username.github.io/${repo}/`;
   return `https://${username}.github.io/${repo}/`;

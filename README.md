@@ -35,7 +35,7 @@ Edit `.env` and fill in:
 ### 3. Enable GitHub Pages
 1. Go to your repo → **Settings → Pages**
 2. Set source: **GitHub Actions**
-3. Done — your report URL will be: `https://YOUR_USERNAME.github.io/ai-weekly-monitor/`
+3. Done — your report URL will be: `https://harsha3358.github.io/ai-weekly-monitor/`
 
 ### 4. Start the service
 ```bash
